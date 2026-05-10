@@ -10,8 +10,6 @@ The intent is to collect legitimate, public, course-adjacent material that can h
 - capstone preparation
 - repo/notebook organisation
 
-Use prior-student material as orientation and inspiration only. Do not copy submitted coursework or capstone solutions.
-
 ---
 
 ## 1. Official / Imperial / Emeritus Sources
@@ -23,9 +21,7 @@ Use prior-student material as orientation and inspiration only. Do not copy subm
 
 Useful for validating the official shape of the programme, including duration, workload, module sequence and capstone framing.
 
-**How to use it**
-
-Use this as the anchor for your repo roadmap and to keep preparation aligned with the actual programme rather than generic ML wandering.
+Anchor for the repo roadmap and to keep preparation aligned with the programme.
 
 ---
 
@@ -43,9 +39,7 @@ Covers:
 - Multivariate Calculus
 - Principal Component Analysis
 
-**How to use it**
-
-Use as a fallback / parallel track when the certificate material assumes maths you want to re-ground properly.
+Use as a fallback / parallel track when the certificate material assumes maths I want to re-ground properly.
 
 ---
 
@@ -69,12 +63,12 @@ Useful for:
 
 Useful alongside 3Blue1Brown.
 
-Suggested use:
+Planned use:
 
 ```text
 3Blue1Brown = visual intuition
 Imperial M4ML = ML-oriented formalisation
-Your notebook = NumPy implementation
+My notebook(s) = NumPy implementation
 ```
 
 ---
@@ -107,9 +101,7 @@ Topics include:
 - bias-variance
 - PCA
 
-**How to use it**
-
-This is probably deeper/more formal than the professional certificate requires. Use selectively when you want a rigorous backup explanation.
+This is probably deeper/more formal than the professional certificate requires. Use selectively for a rigorous backup explanation.
 
 ---
 
@@ -126,8 +118,6 @@ Topics include:
 - probability
 - statistics
 
-**How to use it**
-
 Good deeper reference for the exact foundations that reappear throughout ML: vectors, matrices, norms, projections, gradients, probability, MLE and bias-variance.
 
 ---
@@ -136,7 +126,7 @@ Good deeper reference for the exact foundations that reappear throughout ML: vec
 
 These appear to be public repositories from students who took the same or closely related Imperial Professional Certificate.
 
-Use them carefully. They are useful for understanding expected notebook/project shape, but they should not become source material for your own submissions.
+Use them carefully. They are useful for understanding expected notebook/project shape, but they should not become source material for my own submissions.
 
 ### AnthonyDas — Imperial College MLAI Capstone Project
 
@@ -319,7 +309,7 @@ Blank notebooks and solutions for the Imperial College London M4ML specialisatio
 
 **Use with care**
 
-This may contain solution material. Use it after attempting exercises yourself.
+This may contain solution material. Use it after attempting exercises myself.
 
 ---
 
@@ -339,7 +329,7 @@ Useful for orientation, but avoid using solution material as a crutch.
 
 These are public, but they appear to contain quiz answers, lab assignments or completed programming assignments.
 
-They may be useful only after you have genuinely attempted a problem and need help debugging your understanding.
+They may be useful only after having genuinely attempted a problem and needing help debugging my understanding.
 
 ### shantanu1109 — Coursera Imperial M4ML Specialization
 
@@ -382,7 +372,7 @@ Use:
 
 1. 3Blue1Brown Essence of Linear Algebra
 2. Imperial M4ML Linear Algebra playlist
-3. Your own NumPy notebooks
+3. My own NumPy notebooks
 4. Lay textbook exercises where useful
 
 Suggested repo path:
@@ -391,7 +381,7 @@ Suggested repo path:
 notebooks/01_linear_algebra_numpy/
 ```
 
-Suggested notebooks:
+Potential notebooks:
 
 ```text
 01_vectors_shapes_norms.ipynb
@@ -410,7 +400,7 @@ Use:
 
 1. Imperial M4ML Multivariate Calculus playlist
 2. Coursera multivariate calculus course page
-3. Your own gradient descent notebook
+3. My own gradient descent notebook
 
 Suggested repo path:
 
@@ -418,7 +408,7 @@ Suggested repo path:
 notebooks/02_calculus_optimisation/
 ```
 
-Suggested notebooks:
+Potential notebooks:
 
 ```text
 01_derivatives_and_slopes.ipynb
@@ -434,7 +424,7 @@ Suggested notebooks:
 
 Use:
 
-1. Your Imperial syllabus modules
+1. My Imperial syllabus modules
 2. NumPy simulation notebooks
 3. pandas summary/statistics notebooks
 4. selected M4ML/statistics references as needed
@@ -446,7 +436,7 @@ notebooks/03_probability_numpy/
 notebooks/04_statistics_pandas/
 ```
 
-Suggested notebooks:
+Potential notebooks:
 
 ```text
 01_coin_flips_and_monte_carlo.ipynb
@@ -463,23 +453,6 @@ Suggested notebooks:
 ### For capstone preparation
 
 The public capstone repos strongly suggest that black-box optimisation is worth preparing for early.
-
-Suggested repo path:
-
-```text
-capstone-prep/
-```
-
-Suggested notebooks:
-
-```text
-01_random_search_baseline.ipynb
-02_grid_vs_random_vs_sobol.ipynb
-03_surrogate_model_concept.ipynb
-04_gaussian_process_intro.ipynb
-05_expected_improvement_and_ucb.ipynb
-06_query_budget_strategy.md
-```
 
 Topics to revisit before capstone:
 
@@ -525,7 +498,7 @@ Use public material in this order:
 ```text
 Official course material
 Official Imperial-adjacent maths resources
-Your own notebooks
+My own notebooks
 Prior-student repos for structure only
 Solution repos only after serious independent attempts
 ```
