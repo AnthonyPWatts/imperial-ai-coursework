@@ -1,7 +1,8 @@
 # Imperial AI Coursework
 
-Preparation and coursework workspace for the Imperial College Business School
-Professional Certificate in Machine Learning and Artificial Intelligence.
+Preparation and coursework workspace for the Imperial College Business School Professional Certificate in Machine Learning and Artificial Intelligence.
+
+This repository contains my own preparation notes, experiments and learning exercises. It is not intended to publish assessed submission material or copyrighted course materials.
 
 ## Purpose
 
@@ -14,8 +15,8 @@ This repo is a personal learning workspace for:
 
 ## Structure
 
-- `capstone/` — capstone project
-- `capstone-prep/` — black-box optimisation and project preparation
+- `capstone/` — capstone project #planned
+- `capstone-prep/` — black-box optimisation and project preparation #planned
 - `course-labs/` — executable lab notebooks and environment checks
 - `maths-refresh/` — pre-course maths notebooks implemented in Python
 - `notebooks/` — my own notebooks on key topics, organised to match course modules
