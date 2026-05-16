@@ -1,14 +1,16 @@
 # Interactive Maths Refresh Tools
 
-Small browser-based tools that support the linear algebra notebooks.
+Small standalone browser tools that support the maths refresh notebooks.
 
 ## 2D Matrix Transformation Playground
 
-Open `matrix-transformer.html` in a browser to experiment with how a 2×2 matrix transforms:
+`matrix-transformer.html` is a self-contained HTML file for experimenting with how a 2x2 matrix transforms:
 
 - basis vectors
 - a grid
 - simple shapes
 - area and orientation via the determinant
 
-This is intended as a companion to the matrix transformation notebooks, not as a replacement for them.
+Open the file directly in a browser. No Python environment, package install or build step is required.
+
+This tool is intended as a visual companion to the matrix transformation notebooks, especially the `04` series in `maths-refresh/`.
