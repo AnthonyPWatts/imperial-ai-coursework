@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>2D Matrix Transformation Playground</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --panel: #ffffff;
+      --ink: #0f172a;
+      --muted: #64748b;
+      --soft: #e2e8f0;
+      --line: #94a3b8;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header,
+    .panel {
+      background: var(--panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    header {
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      line-height: 1.1;
+    }
+
+    h2 {
+      margin-bottom: 12px;
+      font-size: 1.2rem;
+    }
+
+    .intro {
+      max-width: 860px;
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .controls {
+      display: grid;
+      gap: 20px;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .matrix-display {
+      display: inline-block;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-radius: 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.4;
+      box-shadow: inset 0 0 0 1px var(--soft);
+    }
+
+    .matrix-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    label.slider {
+      display: block;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #f8fafc;
+      border-radius: 14px;
+    }
+
+    .slider-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .value {
+      font-family: Consolas, "Courier New", monospace;
+      color: var(--accent-dark);
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: var(--accent-dark);
+    }
+
+    button.secondary {
+      background: #e2e8f0;
+      color: var(--ink);
+    }
+
+    button.secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .determinant {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--ink);
+      color: white;
+    }
+
+    .determinant strong {
+      display: block;
+      margin: 4px 0 6px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.8rem;
+    }
+
+    .determinant p {
+      margin-bottom: 0;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+    }
+
+    .toggle-row,
+    .shape-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-top: 1px solid var(--soft);
+    }
+
+    .shape-row:first-of-type,
+    .toggle-row:first-of-type {
+      border-top: 0;
+    }
+
+    select {
+      padding: 8px;
+      border: 1px solid var(--soft);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .canvas-panel {
+      padding: 18px;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: min(66vh, 560px);
+      min-height: 460px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: inset 0 0 0 1px var(--soft);
+    }
+
+    .readout {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .readout div {
+      padding: 12px;
+      background: #f8fafc;
+      border-radius: 14px;
+      font-size: 0.95rem;
+    }
+
+    .readout strong {
+      display: block;
+      margin-top: 4px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 1.15rem;
+    }
+
+    .note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .readout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>2D Matrix Transformation Playground</h1>
+      <p class="intro">
+        Change the four values of a 2×2 matrix and watch what happens to the grid, basis vectors and a simple shape.
+        The matrix maps each point <code>[x, y]</code> to <code>[ax + by, cx + dy]</code>.
+      </p>
+    </header>
+
+    <section class="layout">
+      <div class="controls">
+        <div class="panel">
+          <div class="matrix-header">
+            <h2>Matrix</h2>
+            <div class="matrix-display" id="matrixDisplay"></div>
+          </div>
+
+          <label class="slider">
+            <span class="slider-row"><span>a: x from x</span><span class="value" id="aValue"></span></span>
+            <input id="a" type="range" min="-2.5" max="2.5" step="0.05" value="1" />
+          </label>
+
+          <label class="slider">
+            <span class="slider-row"><span>b: x from y</span><span class="value" id="bValue"></span></span>
+            <input id="b" type="range" min="-2.5" max="2.5" step="0.05" value="0" />
+          </label>
+
+          <label class="slider">
+            <span class="slider-row"><span>c: y from x</span><span class="value" id="cValue"></span></span>
+            <input id="c" type="range" min="-2.5" max="2.5" step="0.05" value="0" />
+          </label>
+
+          <label class="slider">
+            <span class="slider-row"><span>d: y from y</span><span class="value" id="dValue"></span></span>
+            <input id="d" type="range" min="-2.5" max="2.5" step="0.05" value="1" />
+          </label>
+
+          <div class="determinant">
+            Determinant
+            <strong id="determinantValue"></strong>
+            <p id="determinantExplanation"></p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Presets</h2>
+          <div class="button-grid" id="presetButtons"></div>
+          <p class="note" id="presetNote"></p>
+        </div>
+
+        <div class="panel">
+          <h2>View options</h2>
+
+          <div class="shape-row">
+            <strong>Shape</strong>
+            <select id="shape">
+              <option value="house">House</option>
+              <option value="square">Square</option>
+              <option value="triangle">Triangle</option>
+            </select>
+          </div>
+
+          <label class="toggle-row">
+            <strong>Show original shape</strong>
+            <input id="showOriginal" type="checkbox" checked />
+          </label>
+
+          <label class="toggle-row">
+            <strong>Show transformed grid</strong>
+            <input id="showGrid" type="checkbox" checked />
+          </label>
+
+          <button class="secondary" id="resetButton" type="button">Reset to identity</button>
+        </div>
+      </div>
+
+      <div class="panel canvas-panel">
+        <svg id="drawing" viewBox="0 0 680 520" aria-label="Matrix transformation visualisation"></svg>
+
+        <div class="readout">
+          <div>
+            i-hat lands at
+            <strong id="iReadout"></strong>
+          </div>
+          <div>
+            j-hat lands at
+            <strong id="jReadout"></strong>
+          </div>
+          <div>
+            Reversible?
+            <strong id="reversibleReadout"></strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const presets = [
+      { name: "Identity", matrix: [1, 0, 0, 1], note: "Leaves every point where it started." },
+      { name: "Scale x", matrix: [1.8, 0, 0, 1], note: "Stretches horizontally only." },
+      { name: "Scale y", matrix: [1, 0, 0, 1.8], note: "Stretches vertically only." },
+      { name: "Reflect y-axis", matrix: [-1, 0, 0, 1], note: "Flips left and right. Determinant is negative." },
+      { name: "Reflect x-axis", matrix: [1, 0, 0, -1], note: "Flips up and down. Determinant is negative." },
+      { name: "Shear x", matrix: [1, 1, 0, 1], note: "x changes in proportion to y." },
+      { name: "Shear y", matrix: [1, 0, 1, 1], note: "y changes in proportion to x." },
+      { name: "90° rotation", matrix: [0, -1, 1, 0], note: "Rotates anticlockwise by 90 degrees." },
+      { name: "Squash to line", matrix: [1, 0, 0, 0], note: "Area collapses to zero. Determinant is zero." }
+    ];
+
+    const shapes = {
+      square: [[-1, -1], [1, -1], [1, 1], [-1, 1]],
+      triangle: [[0, 1.4], [-1.2, -1], [1.2, -1]],
+      house: [[-1.1, -1], [1.1, -1], [1.1, 0.5], [0, 1.5], [-1.1, 0.5]]
+    };
+
+    const svg = document.getElementById("drawing");
+    const width = 680;
+    const height = 520;
+    const scale = 48;
+    const centre = [width / 2, height / 2];
+
+    const controls = {
+      a: document.getElementById("a"),
+      b: document.getElementById("b"),
+      c: document.getElementById("c"),
+      d: document.getElementById("d"),
+      shape: document.getElementById("shape"),
+      showOriginal: document.getElementById("showOriginal"),
+      showGrid: document.getElementById("showGrid")
+    };
+
+    const labels = {
+      a: document.getElementById("aValue"),
+      b: document.getElementById("bValue"),
+      c: document.getElementById("cValue"),
+      d: document.getElementById("dValue"),
+      matrix: document.getElementById("matrixDisplay"),
+      determinant: document.getElementById("determinantValue"),
+      determinantExplanation: document.getElementById("determinantExplanation"),
+      presetNote: document.getElementById("presetNote"),
+      iReadout: document.getElementById("iReadout"),
+      jReadout: document.getElementById("jReadout"),
+      reversibleReadout: document.getElementById("reversibleReadout")
+    };
+
+    function number(value) {
+      return Number(value);
+    }
+
+    function format(value) {
+      if (Math.abs(value) < 0.0001) return "0";
+      return Number(value.toFixed(2)).toString();
+    }
+
+    function matrix() {
+      return [number(controls.a.value), number(controls.b.value), number(controls.c.value), number(controls.d.value)];
+    }
+
+    function applyMatrix(m, point) {
+      const [a, b, c, d] = m;
+      const [x, y] = point;
+      return [a * x + b * y, c * x + d * y];
+    }
+
+    function toScreen(point) {
+      const [x, y] = point;
+      return [centre[0] + x * scale, centre[1] - y * scale];
+    }
+
+    function pointsToString(points) {
+      return points.map(point => toScreen(point).join(",")).join(" ");
+    }
+
+    function determinantExplanation(det) {
+      if (Math.abs(det) < 0.0001) return "Area has collapsed to zero; the transformation is not reversible.";
+      if (det < 0) return "Area is scaled by |det| and orientation has flipped.";
+      if (Math.abs(det - 1) < 0.0001) return "Area is preserved and orientation is unchanged.";
+      return "Area is scaled by the determinant and orientation is unchanged.";
+    }
+
+    function gridLines(limit) {
+      const lines = [];
+      for (let i = -limit; i <= limit; i += 1) {
+        lines.push([[-limit, i], [limit, i]]);
+        lines.push([[i, -limit], [i, limit]]);
+      }
+      return lines;
+    }
+
+    function makeSvgElement(name, attributes) {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", name);
+      for (const [key, value] of Object.entries(attributes)) {
+        element.setAttribute(key, value);
+      }
+      return element;
+    }
+
+    function addLine(from, to, attributes) {
+      const [x1, y1] = toScreen(from);
+      const [x2, y2] = toScreen(to);
+      svg.appendChild(makeSvgElement("line", { x1, y1, x2, y2, ...attributes }));
+    }
+
+    function addText(text, x, y, attributes) {
+      const element = makeSvgElement("text", { x, y, ...attributes });
+      element.textContent = text;
+      svg.appendChild(element);
+    }
+
+    function addVector(to, label, labelOffsetY) {
+      const [x1, y1] = centre;
+      const [x2, y2] = toScreen(to);
+      svg.appendChild(makeSvgElement("line", {
+        x1,
+        y1,
+        x2,
+        y2,
+        stroke: "#0f172a",
+        "stroke-width": 5,
+        "marker-end": "url(#arrow)"
+      }));
+      addText(label, x2 + 8, y2 - 8 + labelOffsetY, {
+        fill: "#0f172a",
+        "font-size": 14,
+        "font-weight": 700
+      });
+    }
+
+    function draw() {
+      const m = matrix();
+      const [a, b, c, d] = m;
+      const det = a * d - b * c;
+      const selectedShape = shapes[controls.shape.value];
+      const transformedShape = selectedShape.map(point => applyMatrix(m, point));
+      const transformedI = applyMatrix(m, [1, 0]);
+      const transformedJ = applyMatrix(m, [0, 1]);
+
+      labels.a.textContent = format(a);
+      labels.b.textContent = format(b);
+      labels.c.textContent = format(c);
+      labels.d.textContent = format(d);
+      labels.matrix.innerHTML = `[${format(a)} ${format(b)}]<br>[${format(c)} ${format(d)}]`;
+      labels.determinant.textContent = format(det);
+      labels.determinantExplanation.textContent = determinantExplanation(det);
+      labels.iReadout.textContent = `(${format(transformedI[0])}, ${format(transformedI[1])})`;
+      labels.jReadout.textContent = `(${format(transformedJ[0])}, ${format(transformedJ[1])})`;
+      labels.reversibleReadout.textContent = Math.abs(det) < 0.0001 ? "No" : "Yes";
+
+      const currentPreset = presets.find(preset => preset.matrix.every((value, index) => Math.abs(value - m[index]) < 0.001));
+      labels.presetNote.textContent = currentPreset
+        ? currentPreset.note
+        : "Custom transformation. Try to describe what changed before looking at the numbers.";
+
+      svg.replaceChildren();
+
+      const defs = makeSvgElement("defs", {});
+      const marker = makeSvgElement("marker", {
+        id: "arrow",
+        markerWidth: 8,
+        markerHeight: 8,
+        refX: 5,
+        refY: 3,
+        orient: "auto",
+        markerUnits: "strokeWidth"
+      });
+      marker.appendChild(makeSvgElement("path", { d: "M0,0 L0,6 L6,3 z", fill: "#0f172a" }));
+      defs.appendChild(marker);
+      svg.appendChild(defs);
+
+      for (const [from, to] of gridLines(4)) {
+        addLine(from, to, { stroke: "#e2e8f0", "stroke-width": 1 });
+      }
+
+      addLine([-6.5, 0], [6.5, 0], { stroke: "#94a3b8", "stroke-width": 1.5 });
+      addLine([0, -5], [0, 5], { stroke: "#94a3b8", "stroke-width": 1.5 });
+
+      if (controls.showGrid.checked) {
+        for (const [from, to] of gridLines(4)) {
+          addLine(applyMatrix(m, from), applyMatrix(m, to), {
+            stroke: "#64748b",
+            "stroke-width": 1.2,
+            opacity: 0.55
+          });
+        }
+      }
+
+      if (controls.showOriginal.checked) {
+        svg.appendChild(makeSvgElement("polygon", {
+          points: pointsToString(selectedShape),
+          fill: "none",
+          stroke: "#94a3b8",
+          "stroke-width": 3,
+          "stroke-dasharray": "7 7"
+        }));
+      }
+
+      svg.appendChild(makeSvgElement("polygon", {
+        points: pointsToString(transformedShape),
+        fill: "rgba(15, 23, 42, 0.12)",
+        stroke: "#0f172a",
+        "stroke-width": 4
+      }));
+
+      addVector(transformedI, "i′ = first column", 0);
+      addVector(transformedJ, "j′ = second column", 18);
+
+      addText("Faint grid = original space", 24, 34, {
+        fill: "#64748b",
+        "font-size": 14,
+        "font-weight": 700
+      });
+      addText("Darker grid/shape = transformed space", 24, 56, {
+        fill: "#334155",
+        "font-size": 14,
+        "font-weight": 700
+      });
+    }
+
+    function setMatrix(values) {
+      [controls.a.value, controls.b.value, controls.c.value, controls.d.value] = values;
+      draw();
+    }
+
+    function makePresetButtons() {
+      const container = document.getElementById("presetButtons");
+      for (const preset of presets) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = preset.name;
+        button.addEventListener("click", () => setMatrix(preset.matrix));
+        container.appendChild(button);
+      }
+    }
+
+    for (const control of Object.values(controls)) {
+      control.addEventListener("input", draw);
+      control.addEventListener("change", draw);
+    }
+
+    document.getElementById("resetButton").addEventListener("click", () => setMatrix([1, 0, 0, 1]));
+
+    makePresetButtons();
+    draw();
+  </script>
+</body>
+</html>
