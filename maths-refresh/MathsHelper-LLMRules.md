@@ -15,6 +15,7 @@ The best notebooks should feel like guided learning notes: a little prose, a lit
 - Teach the concept, not just the mechanics.
 - Prefer one clear idea per section.
 - Keep explanations direct, plain-English, and grounded in the maths.
+- Mention important mathematical edge cases briefly when they prevent misleading intuition, but avoid turning the notebook into a reference manual.
 - Avoid turning a notebook into a reference manual.
 - Avoid unnecessary repetition once a stronger later section makes an earlier section redundant.
 - Use code and plots to support the explanation, not to show off.
@@ -162,6 +163,23 @@ A short statement of what the example showed.
 ```
 
 Avoid making one notebook cover too many concepts. If the topic grows, split it into smaller notebooks and use a parent notebook or README-style overview to link them together.
+
+
+## Conceptual reframes and metaphors
+
+Conceptual reframes, analogies, and alternate mental models usually work best after the concrete mechanics have landed.
+
+For example, in a projection notebook, first show:
+
+1. scalar projection
+2. vector projection
+3. parallel component
+4. perpendicular component
+
+Then introduce a reframe such as “imagine the target vector as a temporary axis”.
+
+This lets the reframe consolidate understanding rather than interrupt the initial learning path.
+
 
 ## Flow and redundancy
 
@@ -525,6 +543,36 @@ Aw = A @ w
 
 Do not make code clever if simple code teaches better.
 
+
+## Run top-to-bottom consistency
+
+Notebooks should run cleanly from top to bottom without the prose drifting away from the current variable state.
+
+Avoid reusing generic variable names such as `a`, `b`, `v`, or `w` for different teaching examples if later markdown still refers to earlier values.
+
+Prefer example-specific names when a notebook contains more than one scenario:
+
+```python
+axis_a = np.array([4, 3])
+axis_b = np.array([5, 0])
+
+general_a = np.array([3, 4])
+general_b = np.array([5, 1.2])
+```
+
+When reviewing, check that every markdown explanation, printed result, and plot still matches the current values if the notebook is executed from a fresh kernel.
+
+## Generated notebook QA
+
+After generating or editing a notebook, inspect the markdown source for common rendering failures:
+
+- no accidental control characters caused by unescaped LaTeX, such as broken `\times`, `\theta`, or `\frac`
+- no raw `\[ ... \]` display maths unless specifically requested
+- no unintended `\( ... \)` inline maths
+- balanced `$$` display maths delimiters
+- no markdown prose that contradicts the executed outputs
+
+
 ## Review checklist
 
 When reviewing a notebook, check:
@@ -540,6 +588,11 @@ When reviewing a notebook, check:
 - Are labels readable and manually nudged where necessary?
 - Are plot titles plain and not over-metaphorical?
 - Is there any “arrow soup” that should be split into before/after plots?
+- Do variable names and markdown explanations remain consistent when the notebook is run top-to-bottom from a fresh kernel?
+- Are important mathematical edge cases mentioned without derailing the notebook?
+  - Example: cosine similarity is undefined for zero vectors.
+  - Example: projection onto the zero vector is undefined.
+- Has the markdown source been checked for broken LaTeX escaping, control characters, and balanced `$$` delimiters?
 - Does the final summary reinforce the central intuition without becoming too long?
 
 ## Preferred overall feel
