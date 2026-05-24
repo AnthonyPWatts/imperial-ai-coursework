@@ -1,12 +1,24 @@
 # Maths Helper Rules
 
-Use this brief when asking an LLM to help generate or edit my maths / ML preparation notebooks.
+Use this brief when asking an LLM to help generate, review, or edit my maths / ML preparation notebooks.
 
 ## Context
 
 I am preparing for an ML / AI course and creating educational Jupyter notebooks in a GitHub repo.
 
 The notebooks should be clear, teaching-focused, and bite-sized. They should build intuition gradually without turning into sprawling reference documents.
+
+The best notebooks should feel like guided learning notes: a little prose, a little maths, a small amount of code, a carefully chosen plot, and then a concise statement of the intuition.
+
+## Core style principles
+
+- Teach the concept, not just the mechanics.
+- Prefer one clear idea per section.
+- Keep explanations direct, plain-English, and grounded in the maths.
+- Avoid turning a notebook into a reference manual.
+- Avoid unnecessary repetition once a stronger later section makes an earlier section redundant.
+- Use code and plots to support the explanation, not to show off.
+- Make the concept land cleanly, then move on.
 
 ## Markdown and maths formatting
 
@@ -50,6 +62,8 @@ and inline:
 $\mathbf{e}_1$ points along the x-axis.
 ```
 
+Avoid `\( ... \)` for inline maths unless there is a specific reason to use it. Prefer `$...$` for consistency.
+
 Avoid markdown / maths combinations that are likely to render badly in notebooks, such as raw `\[ ... \]` blocks or square-bracket vector notation that could be mistaken for markdown links.
 
 Prefer column-vector notation where useful:
@@ -63,6 +77,101 @@ $$
 \end{bmatrix}
 $$
 ```
+
+For short inline references, bracket notation is fine if it renders clearly:
+
+```markdown
+The vector $[2, 1]$ can be read as $2\mathbf{e}_1 + 1\mathbf{e}_2$.
+```
+
+## Avoid display maths inside bullet points
+
+Display maths inside bullet points often renders with awkward spacing in JupyterLab.
+
+Avoid this:
+
+```markdown
+- The standard basis vectors are
+
+$$
+\mathbf{e}_1 = [1, 0]
+$$
+```
+
+Prefer either inline maths inside bullets:
+
+```markdown
+- The first column is where $\mathbf{e}_1$ lands.
+- The second column is where $\mathbf{e}_2$ lands.
+```
+
+or use short prose followed by a separate display block:
+
+```markdown
+The standard basis vectors are:
+
+$$
+\mathbf{e}_1 =
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+\qquad
+\mathbf{e}_2 =
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+$$
+```
+
+Use display maths for important equations, not as decoration for every small symbol.
+
+## Notebook structure
+
+Prefer a gentle sequence:
+
+1. introduce the idea in plain English
+2. show the maths notation
+3. demonstrate with a small Python example
+4. visualise the result
+5. summarise the intuition
+
+A strong section usually has this shape:
+
+```markdown
+## Concept name
+
+A short explanation of the idea.
+
+$$
+\text{one useful equation or definition}
+$$
+```
+
+```python
+# Small numerical example
+```
+
+```python
+# One clear plot, if a plot helps
+```
+
+```markdown
+A short statement of what the example showed.
+```
+
+Avoid making one notebook cover too many concepts. If the topic grows, split it into smaller notebooks and use a parent notebook or README-style overview to link them together.
+
+## Flow and redundancy
+
+Review the notebook as a learning journey, not just as isolated cells.
+
+If an early plot or explanation is later replaced by a better before/after comparison, consider removing the earlier version rather than keeping both.
+
+Avoid orphaned cells: every plot should either introduce a new idea, prepare for the next idea, or provide the payoff for a concept just explained.
+
+For comparison sections, it is often better to build up the idea with code first, then use the paired plot as the visual payoff.
 
 ## Plotting preferences
 
@@ -84,7 +193,7 @@ rather than showing a large unused bottom-left quadrant.
 Use smaller figure sizes for simple ideas, for example:
 
 ```python
-fig, ax = plt.subplots(figsize=(4.5, 4.5))
+fig, ax = plt.subplots(figsize=(4, 4))
 ```
 
 or:
@@ -95,14 +204,80 @@ fig, ax = plt.subplots(figsize=(5, 4))
 
 Use larger plots only when the concept genuinely needs the space.
 
+## Comparison plots
+
+For comparison-style plots, especially before/after plots, use shared axis limits wherever practical.
+
+This is more important than cropping each plot individually as tightly as possible.
+
+Shared limits make the comparison visually honest and easier to read. For example:
+
+```python
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+shared_xlim = (-1.1, 3.35)
+shared_ylim = (-0.25, 2.75)
+
+for ax in axes:
+    ax.set_xlim(*shared_xlim)
+    ax.set_ylim(*shared_ylim)
+```
+
+Use separate limits only if shared limits make one side genuinely unreadable or misleading.
+
+## Plot helper design
+
+It is fine to start with a simple helper such as:
+
+```python
+def setup_axis(ax, title, limit=4):
+    ax.axhline(0, linewidth=1)
+    ax.axvline(0, linewidth=1)
+    ax.set_xlim(-limit, limit)
+    ax.set_ylim(-limit, limit)
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(True, alpha=0.3)
+    ax.set_title(title)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+```
+
+But if most plots immediately override the limits, prefer evolving the helper to accept explicit limits:
+
+```python
+def setup_axis(ax, title, xlim=(-4, 4), ylim=(-4, 4)):
+    ax.axhline(0, linewidth=1)
+    ax.axvline(0, linewidth=1)
+    ax.set_xlim(*xlim)
+    ax.set_ylim(*ylim)
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(True, alpha=0.3)
+    ax.set_title(title)
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+```
+
+Then call it like this:
+
+```python
+setup_axis(
+    ax,
+    "After: transformed basis vectors",
+    xlim=(-1.1, 3.35),
+    ylim=(-0.25, 2.75)
+)
+```
+
+Keep helpers simple. Do not hide important teaching choices inside overly clever plotting utilities.
+
 ## Visual teaching style
 
 Avoid cluttered “arrow soup”.
 
 When comparing a vector before and after a matrix transformation, prefer two clear plots:
 
-1. before: vector built from the standard basis
-2. after: transformed vector built from the transformed basis vectors
+1. before: the vector built from the standard basis vectors
+2. after: the transformed vector built from the transformed basis vectors
 
 For example:
 
@@ -118,11 +293,35 @@ $$
 
 The key teaching point is:
 
+> The coefficients stay the same. The basis vectors have moved.
+
+or:
+
 > The matrix changes the basis vectors. The vector follows because it is built from those basis vectors.
 
 Use before / after plots when they reduce clutter and make the idea easier to see.
 
-## Label preferences
+## Titles and labels in plots
+
+Keep plot titles plain and descriptive. Do not overuse metaphors in titles.
+
+Good examples:
+
+```python
+"Before: standard basis vectors"
+"After: transformed basis vectors"
+"The standard basis vectors"
+"The transformed basis vectors"
+```
+
+Less ideal if overused:
+
+```python
+"Before: standard basis recipe"
+"After: transformed basis recipe"
+```
+
+The “recipe” metaphor can be useful in prose, but plot titles should usually remain clean and mathematical.
 
 Use clean mathematical labels where possible:
 
@@ -132,7 +331,22 @@ Use clean mathematical labels where possible:
 "2e₁"
 "1e₂"
 "v"
+"Ae₁"
+"Ae₂"
+"2Ae₁"
+"1Ae₂"
+"Av"
 ```
+
+Avoid overly code-like labels inside plots:
+
+```python
+"A @ e1"
+"2(A @ e1)"
+"A @ v"
+```
+
+Those are fine in code cells or printed output, but they are usually too busy for plot labels.
 
 If Unicode subscripts render badly, fall back to Matplotlib maths labels:
 
@@ -142,34 +356,202 @@ If Unicode subscripts render badly, fall back to Matplotlib maths labels:
 "$2e_1$"
 "$1e_2$"
 "$v$"
+"$Ae_1$"
+"$Ae_2$"
+"$Av$"
 ```
 
 Manually nudge labels where needed to avoid collisions, especially near vector tips.
 
-## Prose and tone
+It is acceptable to draw an arrow without using the helper label, then place the label manually with `ax.text(...)`.
 
-Keep the prose direct and explanatory.
+## Vector construction plots
 
-I like intuitive phrases such as “a vector as a recipe” or “coordinates as instructions”, but tie the metaphor back to the maths.
+For simple vector construction, a helper such as `draw_chain(...)` may be fine. But for polished teaching plots, manual placement is often clearer.
+
+Prefer this kind of approach when labels are awkward:
+
+```python
+# Draw the first component.
+ax.arrow(
+    0, 0,
+    2, 0,
+    length_includes_head=True,
+    head_width=0.08,
+    head_length=0.12,
+    linewidth=2
+)
+
+ax.text(
+    1.0, -0.18,
+    "2e₁",
+    fontsize=11,
+    ha="center",
+    va="top"
+)
+
+# Draw the second component from the end of the first.
+ax.arrow(
+    2, 0,
+    0, 1,
+    length_includes_head=True,
+    head_width=0.06,
+    head_length=0.08,
+    linewidth=2,
+    linestyle="--",
+    alpha=0.8
+)
+```
+
+Use a dashed arrow for the second component if it helps show the vector-addition construction.
+
+Use slightly fainter arrows for context vectors, such as the original basis vectors in a plot focused on transformed basis vectors.
+
+## Matrix transformation notebooks
+
+For notebooks about matrices as transformations, a strong learning sequence is:
+
+1. define the standard basis vectors
+2. show that coordinates build a vector from those basis vectors
+3. introduce a matrix
+4. show where the matrix sends each basis vector
+5. point out that those destinations are the columns of the matrix
+6. show that matrix-vector multiplication rebuilds the vector from the transformed basis vectors
+7. use a before/after plot as the visual payoff
+8. test the same idea on a second vector, ideally one with a negative coefficient
+9. end with a compact summary
 
 Useful phrasing:
 
 > Its coordinates tell us how to build it from the standard basis vectors.
 
-and:
-
 > The vector is not just an arrow. It is also a set of instructions.
 
-Do not overcomplicate the notebook. Make the concept land cleanly, then move on.
+> The first column is where $\mathbf{e}_1$ lands.
 
-## Notebook structure
+> The second column is where $\mathbf{e}_2$ lands.
 
-Prefer a gentle sequence:
+> Matrix-vector multiplication rebuilds the vector using the transformed basis vectors.
 
-1. introduce the idea in plain English
-2. show the maths notation
-3. demonstrate with a small Python example
-4. visualise the result
-5. summarise the intuition
+> The coefficients stay the same; the basis vectors change.
 
-Avoid making one notebook cover too many concepts. If the topic grows, split it into smaller notebooks and use a parent notebook or README-style overview to link them together.
+Use “recipe” sparingly. “Vector as a recipe” can be a useful heading or intuition, but do not force the metaphor into every plot title or summary line.
+
+## Summary sections
+
+Summary sections should be compact and readable.
+
+Avoid mixing bullet points with display maths in a way that creates lots of vertical whitespace.
+
+A good summary shape is:
+
+```markdown
+## Summary
+
+The standard basis vectors are:
+
+$$
+\mathbf{e}_1 =
+\begin{bmatrix}
+1 \\
+0
+\end{bmatrix}
+\qquad
+\mathbf{e}_2 =
+\begin{bmatrix}
+0 \\
+1
+\end{bmatrix}
+$$
+
+A vector with coordinates $x$ and $y$ can be read as:
+
+$$
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+=
+x\mathbf{e}_1 + y\mathbf{e}_2
+$$
+
+For a matrix $A$:
+
+- the first column is where $\mathbf{e}_1$ lands
+- the second column is where $\mathbf{e}_2$ lands
+- matrix-vector multiplication rebuilds the vector using the transformed basis vectors
+- the coefficients stay the same; the basis vectors change
+
+The central idea is:
+
+$$
+A
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+=
+x(A\mathbf{e}_1) + y(A\mathbf{e}_2)
+$$
+
+So a matrix is not just a grid of numbers. In this notebook, we can read it as a transformation that moves the basis vectors, then rebuilds every other vector from those transformed basis vectors.
+```
+
+## Code style in notebooks
+
+Keep code simple and readable.
+
+Prefer explicit intermediate variables when they support learning:
+
+```python
+Ae1 = A @ e1
+Ae2 = A @ e2
+Av = A @ v
+```
+
+Printed output should be compact and notebook-friendly:
+
+```python
+def print_vector(name, vector):
+    print(f"{name} = [{vector[0]: .2f}, {vector[1]: .2f}]")
+```
+
+When a later cell should be rerunnable independently, it is okay to restate small definitions:
+
+```python
+w = np.array([-1, 2])
+Aw = A @ w
+```
+
+Do not make code clever if simple code teaches better.
+
+## Review checklist
+
+When reviewing a notebook, check:
+
+- Is the notebook still bite-sized?
+- Does each section introduce one clear idea?
+- Are there any orphaned or redundant plots?
+- Are all display maths blocks using `$$ ... $$`?
+- Are inline maths expressions using `$...$` consistently?
+- Are any bullet lists broken by display maths?
+- Are plots compact without unnecessary dead space?
+- Do comparison plots share axis limits wherever practical?
+- Are labels readable and manually nudged where necessary?
+- Are plot titles plain and not over-metaphorical?
+- Is there any “arrow soup” that should be split into before/after plots?
+- Does the final summary reinforce the central intuition without becoming too long?
+
+## Preferred overall feel
+
+The notebook should feel polished but not overproduced.
+
+It should look like careful learning material from someone who understands the topic, not like auto-generated notes.
+
+The ideal balance is:
+
+- enough maths to be precise
+- enough prose to be intuitive
+- enough code to be reproducible
+- enough plotting to make the geometry visible
+- enough restraint to keep the notebook readable
