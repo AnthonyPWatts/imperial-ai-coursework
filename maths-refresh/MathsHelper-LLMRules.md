@@ -10,6 +10,8 @@ The notebooks should be clear, teaching-focused, and bite-sized. They should bui
 
 The best notebooks should feel like guided learning notes: a little prose, a little maths, a small amount of code, a carefully chosen plot, and then a concise statement of the intuition.
 
+The goal is not only to improve individual notebooks. The goal is to improve the learning path.
+
 ## Core style principles
 
 - Teach the concept, not just the mechanics.
@@ -20,6 +22,7 @@ The best notebooks should feel like guided learning notes: a little prose, a lit
 - Avoid unnecessary repetition once a stronger later section makes an earlier section redundant.
 - Use code and plots to support the explanation, not to show off.
 - Make the concept land cleanly, then move on.
+- Review notebooks as part of a sequence, not only as isolated documents.
 
 ## Markdown and maths formatting
 
@@ -164,6 +167,92 @@ A short statement of what the example showed.
 
 Avoid making one notebook cover too many concepts. If the topic grows, split it into smaller notebooks and use a parent notebook or README-style overview to link them together.
 
+## Section-level review and pruning
+
+When reviewing a notebook, check whether it still has a unique job in the wider sequence.
+
+A notebook may be technically good but no longer necessary if later revisions have moved its core teaching idea into earlier notebooks.
+
+Ask:
+
+- What does this notebook teach that no other notebook teaches?
+- Does it move the learner forward?
+- Is it introducing a new idea, consolidating a previous idea, or duplicating material?
+- Would the learning path be clearer if this became part of a parent notebook or summary instead?
+- Is this notebook part of the main learning path, or should it be retired, archived, or merged?
+
+Do not preserve a notebook merely because it is good. If its purpose has been absorbed elsewhere, consider retiring it.
+
+Possible review outcomes are:
+
+- keep as-is
+- lightly polish
+- structurally remake
+- merge into another notebook
+- move into a parent/summary notebook
+- archive/delete from the main learning path
+
+For public-facing learning material, a cleaner sequence is usually better than keeping every useful draft.
+
+## Parent notebooks and section summaries
+
+For a multi-notebook section, the parent notebook should do more than list links.
+
+It should briefly explain:
+
+- the purpose of the section
+- the prerequisites
+- the recommended order
+- the central mental model
+- what each child notebook contributes
+- the section-level summary
+- what comes next
+
+If a recap notebook only repeats the central idea of the section, consider folding that recap into the parent notebook instead.
+
+A good parent notebook is a landing page, route map, and concise section summary. It should not become a full teaching notebook that duplicates the child notebooks.
+
+## Distribute central ideas across the teaching path
+
+If an idea is central to a whole section, do not leave it isolated in a late recap notebook.
+
+Introduce it early, then reuse it consistently in later notebooks.
+
+A final summary can reinforce the idea, but the learner should already have been using it throughout the section.
+
+For example, in a matrix-transformation sequence, the basis-vector / column-view idea should appear throughout the sequence, not only in a final recap notebook.
+
+## Main path versus archive
+
+Keep the main learning path clean and intentional.
+
+If an old notebook still has useful material but no longer belongs in the main sequence, either:
+
+- salvage its best ideas into the active notebooks, or
+- move it to an archive area
+
+Avoid leaving deprecated notebooks in the main sequence where they may confuse the learning order.
+
+## Replacement notebook workflow
+
+When generating a replacement notebook, it is fine to use a temporary filename such as:
+
+```text
+04c-scaling-reflection-and-shear-replacement.ipynb
+```
+
+But once accepted, the replacement should normally take the canonical filename in the repo.
+
+Avoid leaving both old and replacement versions side by side in the final learning path unless there is a clear reason.
+
+If an executed notebook is useful for review, generate both:
+
+```text
+notebook-name-replacement.ipynb
+notebook-name-replacement-executed.ipynb
+```
+
+The canonical repo version should normally be the clean accepted notebook, not a growing collection of draft replacements.
 
 ## Conceptual reframes and metaphors
 
@@ -179,7 +268,6 @@ For example, in a projection notebook, first show:
 Then introduce a reframe such as “imagine the target vector as a temporary axis”.
 
 This lets the reframe consolidate understanding rather than interrupt the initial learning path.
-
 
 ## Flow and redundancy
 
@@ -319,6 +407,13 @@ or:
 
 Use before / after plots when they reduce clutter and make the idea easier to see.
 
+For named transformations, show the transformed basis vectors as the main visual object:
+
+- scaling changes basis-vector lengths
+- reflection flips one basis direction
+- shear slants one basis direction into the other
+- rotation turns both basis vectors while preserving length and right angles
+
 ## Titles and labels in plots
 
 Keep plot titles plain and descriptive. Do not overuse metaphors in titles.
@@ -330,6 +425,8 @@ Good examples:
 "After: transformed basis vectors"
 "The standard basis vectors"
 "The transformed basis vectors"
+"Rotation by 45 degrees"
+"Horizontal shear"
 ```
 
 Less ideal if overused:
@@ -354,6 +451,9 @@ Use clean mathematical labels where possible:
 "2Ae₁"
 "1Ae₂"
 "Av"
+"Re₁"
+"Re₂"
+"Rv"
 ```
 
 Avoid overly code-like labels inside plots:
@@ -362,6 +462,7 @@ Avoid overly code-like labels inside plots:
 "A @ e1"
 "2(A @ e1)"
 "A @ v"
+"R @ v"
 ```
 
 Those are fine in code cells or printed output, but they are usually too busy for plot labels.
@@ -377,6 +478,9 @@ If Unicode subscripts render badly, fall back to Matplotlib maths labels:
 "$Ae_1$"
 "$Ae_2$"
 "$Av$"
+"$Re_1$"
+"$Re_2$"
+"$Rv$"
 ```
 
 Manually nudge labels where needed to avoid collisions, especially near vector tips.
@@ -455,6 +559,74 @@ Useful phrasing:
 
 Use “recipe” sparingly. “Vector as a recipe” can be a useful heading or intuition, but do not force the metaphor into every plot title or summary line.
 
+## Named transformation notebooks
+
+For notebooks about named 2D transformations, keep the basis-vector reading central.
+
+Scaling, reflection, shear, and rotation should not feel like unrelated formula lists.
+
+They should feel like recognisable patterns in where the basis vectors land.
+
+A useful structure is:
+
+1. state the named transformation
+2. show the matrix
+3. read its columns as $A\mathbf{e}_1$ and $A\mathbf{e}_2$
+4. show one example vector
+5. plot the original basis/vector faintly and the transformed basis/vector clearly
+6. summarise the visual signature
+
+For example:
+
+- uniform scaling: both basis vectors keep direction and change length by the same factor
+- non-uniform scaling: both basis vectors keep direction, but scale by different factors
+- reflection: one basis direction flips
+- horizontal shear: $\mathbf{e}_1$ stays fixed, $\mathbf{e}_2$ gains an x-component
+- vertical shear: $\mathbf{e}_2$ stays fixed, $\mathbf{e}_1$ gains a y-component
+- rotation: both basis vectors turn together while keeping length $1$ and remaining at right angles
+
+Avoid presenting these only as “one input vector goes in, one output vector comes out”.
+
+## Rotation notebooks
+
+For rotation matrices, explicitly connect sine and cosine to the rotated basis vectors.
+
+For a counter-clockwise rotation by angle $\theta$:
+
+```markdown
+$$
+R_\theta =
+\begin{bmatrix}
+\cos(\theta) & -\sin(\theta) \\
+\sin(\theta) & \cos(\theta)
+\end{bmatrix}
+$$
+
+$$
+R_\theta\mathbf{e}_1 =
+\begin{bmatrix}
+\cos(\theta) \\
+\sin(\theta)
+\end{bmatrix}
+\qquad
+R_\theta\mathbf{e}_2 =
+\begin{bmatrix}
+-\sin(\theta) \\
+\cos(\theta)
+\end{bmatrix}
+$$
+```
+
+Make the key ideas explicit:
+
+- positive angles rotate counter-clockwise
+- negative angles rotate clockwise
+- the columns are the rotated basis vectors
+- a pure rotation preserves vector length
+- the transformed basis vectors stay length $1$ and remain at right angles
+
+A plot of the same vector rotated through several angles can be useful after the basis-vector mechanics have landed.
+
 ## Summary sections
 
 Summary sections should be compact and readable.
@@ -515,6 +687,8 @@ $$
 So a matrix is not just a grid of numbers. In this notebook, we can read it as a transformation that moves the basis vectors, then rebuilds every other vector from those transformed basis vectors.
 ```
 
+For a parent notebook or section overview, the summary may be slightly broader, but should still be concise and should not duplicate the full child notebooks.
+
 ## Code style in notebooks
 
 Keep code simple and readable.
@@ -525,6 +699,14 @@ Prefer explicit intermediate variables when they support learning:
 Ae1 = A @ e1
 Ae2 = A @ e2
 Av = A @ v
+```
+
+For rotation notebooks, similarly prefer:
+
+```python
+Re1 = R @ e1
+Re2 = R @ e2
+Rv = R @ v
 ```
 
 Printed output should be compact and notebook-friendly:
@@ -542,7 +724,6 @@ Aw = A @ w
 ```
 
 Do not make code clever if simple code teaches better.
-
 
 ## Run top-to-bottom consistency
 
@@ -571,7 +752,12 @@ After generating or editing a notebook, inspect the markdown source for common r
 - no unintended `\( ... \)` inline maths
 - balanced `$$` display maths delimiters
 - no markdown prose that contradicts the executed outputs
+- no references to retired notebooks in parent notebooks or README files
+- no stale “next step” text pointing to a notebook that has been removed or reordered
 
+If a notebook contains code, execute it where practical before handing it over.
+
+If execution is not practical, say so explicitly.
 
 ## Review checklist
 
@@ -579,6 +765,9 @@ When reviewing a notebook, check:
 
 - Is the notebook still bite-sized?
 - Does each section introduce one clear idea?
+- Does the notebook have a unique role in the wider sequence?
+- Does it move the learner forward, consolidate intentionally, or duplicate material?
+- Would a cleaner learning path result from merging, archiving, or deleting it?
 - Are there any orphaned or redundant plots?
 - Are all display maths blocks using `$$ ... $$`?
 - Are inline maths expressions using `$...$` consistently?
@@ -594,6 +783,8 @@ When reviewing a notebook, check:
   - Example: projection onto the zero vector is undefined.
 - Has the markdown source been checked for broken LaTeX escaping, control characters, and balanced `$$` delimiters?
 - Does the final summary reinforce the central intuition without becoming too long?
+- Do parent notebooks and README files reflect the current notebook sequence?
+- Are replacement notebooks ready to take canonical filenames once accepted?
 
 ## Preferred overall feel
 
@@ -608,3 +799,10 @@ The ideal balance is:
 - enough code to be reproducible
 - enough plotting to make the geometry visible
 - enough restraint to keep the notebook readable
+
+The ideal sequence is:
+
+- clear enough for learning
+- compact enough for revision
+- polished enough for a public GitHub repo
+- intentional enough that every notebook earns its place
