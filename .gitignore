@@ -4,3 +4,4 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 *.pyc
+ml-foundations/first-practical-workflow/_docx_migration_work/
